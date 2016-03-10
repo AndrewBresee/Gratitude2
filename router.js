@@ -2,13 +2,21 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var Post = require('./post.js');
+var bodyParser = require('body-parser');
 
+//This was from documentation online. Will need to refer back later. 
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
+// create application/json parser
+var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
 
-  app.post('/', function (req, res, next) {
-    console.log("REQUEST FROM POST :" , req);
+  app.post('/', jsonParser, function (req, res, next) {
+    //This console.log tells me the post request in coming in right from postman
+    console.log("REQUEST FROM POST :" , req.body);
     var post = new Post({
       title: req.body.title,
       content: req.body.content

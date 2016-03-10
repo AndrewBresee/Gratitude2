@@ -1,8 +1,11 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
-
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 //localhost --> where the database is being hosted.
 //If it were deployed, it would be at the ip/domain.
