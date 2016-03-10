@@ -1,14 +1,15 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
-var Post = require('post');
+var Post = require('./post.js');
+
+
 
 module.exports = function(app, express) {
 
   app.post('/', function (req, res, next) {
+    console.log("REQUEST FROM POST :" , req);
     var post = new Post({
-      //This probably won't work, because body only works with bodyparser.
-      //I could start using body parser, or figure out how to get the information in another way. 
       title: req.body.title,
       content: req.body.content
     });
