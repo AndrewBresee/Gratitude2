@@ -3,13 +3,15 @@ var app = express();
 var mongoose = require('mongoose');
 var Post = require('./post.js');
 var bodyParser = require('body-parser');
+var db = mongoose.connection;
 
-//This was from documentation online. Will need to refer back later. 
+
+//This was from documentation online. Will need to refer back later.
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// create application/json parser
+// allows the post method to use bodyParser.
 var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
@@ -31,14 +33,18 @@ module.exports = function(app, express) {
   });
 
   app.get('/', function(req, res){
-    mongoose.connection.db.collections['posts'].find({}, function(err, data){
+    console.log("GET REQUEST GOT");
+    console.log("req.body :", req.body);
+    var requestedTitle = req.body.title;
+    Post.findOne({title: requestedTitle}, function(err, data){
       if(err){
         res.statusCode(404).json(err);
         console.log("Could not find");
       } else {
-        res.statusCode(200).json(data)
+        console.log("Data Found!");
+        res.json(200, data);
       }
-    })
+    });
   });
 
 };
