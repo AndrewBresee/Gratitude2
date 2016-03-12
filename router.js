@@ -47,6 +47,20 @@ module.exports = function(app, express) {
     });
   });
 
+  app.post('/update', jsonParser, function (req, res, next) {
+    //This console.log tells me the post request in coming in right from postman
+    console.log("UPDATE POST :" , req.body);
+    var updateTitle = req.body.title;
+    var updateContent = req.body.content;
+    Post.update({ title: updateTitle}, { $set: { content: updateContent }}, function(err, data){
+      if (err) {
+        return next(err);
+      } else {
+        res.json(201);
+      }
+    });
+  });
+
   app.get('/delete', function(req, res){
     var requestedTitle = req.headers.title;
     Post.find({title: requestedTitle}).remove(function(err, data){
