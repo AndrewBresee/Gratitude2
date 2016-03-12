@@ -32,19 +32,36 @@ module.exports = function(app, express) {
     });
   });
 
-  app.get('/', function(req, res){
+  app.get('/', jsonParser, function(req, res){
     console.log("GET REQUEST GOT");
-    console.log("req.body :", req.body);
-    var requestedTitle = req.body.title;
+    console.log("req.body :", req.headers.title);
+    var requestedTitle = req.headers.title;
     Post.findOne({title: requestedTitle}, function(err, data){
       if(err){
         res.statusCode(404).json(err);
         console.log("Could not find");
       } else {
-        console.log("Data Found!");
+        console.log("Data Found! : ", data);
         res.json(200, data);
       }
     });
   });
+
+  app.get('/delete', function(req, res){
+    var requestedTitle = req.headers.title;
+    Post.find({title: requestedTitle}).remove(function(err, data){
+      if(err){
+        res.statusCode(404).json(err);
+        console.log("Could not find");
+      } else {
+        res.send(200, data);
+        console.log("Data Found!");
+      }
+    });
+  });
+
+
+  //For updating, Post.update({ title: title}, { $set: { content: something }}, callback);
+
 
 };
