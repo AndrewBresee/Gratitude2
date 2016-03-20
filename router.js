@@ -1,9 +1,11 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
-var Post = require('./post.js');
 var bodyParser = require('body-parser');
 var db = mongoose.connection;
+
+var Post = require('./post.js');
+var User = require('./user.js');
 
 
 //This was from documentation online. Will need to refer back later.
@@ -16,13 +18,50 @@ var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
 
+  //What is the difference between a url path and the api path?
+  //The url path is where a user will actually go,
+  //the api path is a route that is taken internally?
+  //When we go to a speciic file path in postman, is that the same as going to the path on the browser?
+
+  //Will have to authenticate in here. Need to hash the password as it comes in.
+  //Will also need to get reference to the user and save some kind of authentication for when they make posts.
+  //Need to start using sessions.
+  app.post('/signup', jsonParser, function (req, res, next) {
+    var user = new User({
+      username: req.body.userName,
+      password: req.body.password
+    });
+    user.save(function (err, post) {
+      if (err) {
+        return next(err);
+      } else {
+        res.json(201, user);
+      }
+    });
+  });
+
+  app.get('/login', jsonParser, function (req, res, next) {
+    var user = new User({
+      username: req.body.userName,
+      password: req.body.password
+    });
+    user.save(function (err, post) {
+      if (err) {
+        return next(err);
+      } else {
+        res.json(201, user);
+      }
+    });
+  });
+
+
   //Questions about the different responses/requests. When to use res.next, or res.send, res.write etc.
   //res.(something) seems to just DO something.
   //We can also do res.render(*filename*)
 
   //Will create a post with a title and content
   //On post, it seems we can use req.query instead of having to use middleware jsonParser.
-  app.post('/', jsonParser, function (req, res, next) {
+  app.post('/post', jsonParser, function (req, res, next) {
     var post = new Post({
       title: req.body.title,
       content: req.body.content
