@@ -73,9 +73,16 @@ module.exports = function(app, express) {
 
   //Will have to refector to include users information
   app.post('/post', jsonParser, function (req, res, next) {
+    if(req.session.user === undefined){
+      console.log("You are not logged in!");
+      res.statusCode(404).json("You are not logged in!")
+      //probably need to stop them from continuing here.
+      res.json(404);
+    }
     var post = new Post({
       title: req.body.title,
-      content: req.body.content
+      content: req.body.content,
+      userId: req.session.user._id
     });
     post.save(function (err, post) {
       if (err) {
@@ -87,7 +94,6 @@ module.exports = function(app, express) {
   });
 
   //Will get a specific post based on a requested title
-
   //TODO: Refactor to search for posts based on users information
   app.get('/getUser/:title', function(req, res){
     console.log("req.params.title :", req.params.title);
@@ -95,9 +101,7 @@ module.exports = function(app, express) {
     Post.findOne({title: requestedTitle}, function(err, data){
       if(err){
         res.statusCode(404).json(err);
-        console.log("Could not find");
       } else {
-        console.log("Data Found! : ", data);
         res.json(200, data);
       }
     });
