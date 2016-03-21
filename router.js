@@ -3,6 +3,7 @@ var app = express();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var db = mongoose.connection;
+var bcrypt = require('bcrypt');
 
 var Post = require('./post.js');
 var User = require('./user.js');
@@ -18,9 +19,10 @@ module.exports = function(app, express) {
     //the api path is a route that is taken internally?
     //When we go to a speciic file path in postman, is that the same as going to the path on the browser?
 
-  //TODO: Will have to authenticate in here. Need to hash the password as it comes in.
-    //Will also need to get reference to the user and save some kind of authentication for when they make posts.
-    //Need to start using sessions.
+
+//TODO: Get bcyrpt to hash passwords
+  //Setup routing for different paths
+  //Make frontend
   app.post('/signup', jsonParser, function (req, res, next) {
     var user = new User({
       username: req.body.userName,
@@ -31,6 +33,8 @@ module.exports = function(app, express) {
         return next(err);
       } else {
         //This line saves the user on the session
+        //Without hash, it will save their password directly.
+        //Maybe should only save their username
         req.session.user = data;
         // res.redirect('/dashboard'); --> will use this later when pages are visable.
         res.json(201, user);
@@ -41,13 +45,12 @@ module.exports = function(app, express) {
   app.post('/login', jsonParser, function (req, res, next) {
     var username = req.body.userName;
     var password = req.body.password;
-    User.findOne({username: username}, {password: password}, function(err, user){
+    User.findOne({username: username , password: password}, function(err, user){
       if(err){
         res.statusCode(404).json(err);
         console.log("User Does Not Exist");
       } else {
         req.session.user = user;
-        console.log("Session is created and is :", req.session);
         res.json(200, user);
       }
     });
@@ -60,6 +63,12 @@ module.exports = function(app, express) {
   });
 
 //***ROUTING INFORMATION**//
+app.get('/postPage', function(req, res){
+  if(req.session.user === undefined){
+    console.log("You are not logged in!");
+    res.redirect('/login');
+  }
+});
 
 
 //***POST INFORMATION**//
@@ -95,6 +104,7 @@ module.exports = function(app, express) {
 
   //Will get a specific post based on a requested title
   //TODO: Refactor to search for posts based on users information
+    //Display all posts that the loged in user generated.
   app.get('/getUser/:title', function(req, res){
     console.log("req.params.title :", req.params.title);
     var requestedTitle = req.params.title;
