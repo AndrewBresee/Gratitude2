@@ -7,26 +7,23 @@ var db = mongoose.connection;
 var Post = require('./post.js');
 var User = require('./user.js');
 
-
-//This was from documentation online. Will need to refer back later.
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
 // allows the post method to use bodyParser.
 var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
 
-  //What is the difference between a url path and the api path?
-  //The url path is where a user will actually go,
-  //the api path is a route that is taken internally?
-  //When we go to a speciic file path in postman, is that the same as going to the path on the browser?
+//***USER INFORMATION**//
 
-  //Will have to authenticate in here. Need to hash the password as it comes in.
-  //Will also need to get reference to the user and save some kind of authentication for when they make posts.
-  //Need to start using sessions.
+  //?? What is the difference between a url path and the api path?
+    //The url path is where a user will actually go,
+    //the api path is a route that is taken internally?
+    //When we go to a speciic file path in postman, is that the same as going to the path on the browser?
+
+  //TODO: Will have to authenticate in here. Need to hash the password as it comes in.
+    //Will also need to get reference to the user and save some kind of authentication for when they make posts.
+    //Need to start using sessions.
   app.post('/signup', jsonParser, function (req, res, next) {
+    console.log("INFO GOT : ", req.body)
     var user = new User({
       username: req.body.userName,
       password: req.body.password
@@ -35,6 +32,9 @@ module.exports = function(app, express) {
       if (err) {
         return next(err);
       } else {
+        //This line saves the user on the session
+        // req.session.user = user; --> This breaks it. So I am not doing it right.
+        // res.redirect('/dashboard'); --> will use this later when pages are visable.
         res.json(201, user);
       }
     });
@@ -53,14 +53,22 @@ module.exports = function(app, express) {
       }
     });
   });
+//***ROUTING INFORMATION**//
 
 
-  //Questions about the different responses/requests. When to use res.next, or res.send, res.write etc.
-  //res.(something) seems to just DO something.
-  //We can also do res.render(*filename*)
+
+
+
+//***POST INFORMATION**//
+
+  //?? Questions about the different responses/requests. When to use res.next, or res.send, res.write etc.
+    //res.(something) seems to just DO something.
+    //We can also do res.render(*filename*)
 
   //Will create a post with a title and content
   //On post, it seems we can use req.query instead of having to use middleware jsonParser.
+
+  //Will have to refector to include users information
   app.post('/post', jsonParser, function (req, res, next) {
     var post = new Post({
       title: req.body.title,
@@ -76,8 +84,8 @@ module.exports = function(app, express) {
   });
 
   //Will get a specific post based on a requested title
-  //Somewhat confused about using headers when doing GET
-  //On GET too, it seems we can use req.query instead of having to use middleware jsonParser (But this doesn't work?)
+
+  //TODO: Refactor to search for posts based on users information
   app.get('/getUser/:title', function(req, res){
     console.log("req.params.title :", req.params.title);
     var requestedTitle = req.params.title;
@@ -92,8 +100,9 @@ module.exports = function(app, express) {
     });
   });
 
-  //What does next(err) do?
-  //It seems that including {upsert: true} makes it so that if there isn't anything with that post, it will make a new one.
+  //?? What does next(err) do?
+    //It seems that including {upsert: true} makes it so that if there isn't anything with that post, it will make a new one.
+
   app.put('/', jsonParser, function (req, res, next) {
     //This console.log tells me the post request in coming in right from postman
     console.log("UPDATE POST :" , req.body);
