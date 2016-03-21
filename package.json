@@ -1,6 +1,7 @@
 {
   "name": "one-route",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "express": "~4.5.1",
