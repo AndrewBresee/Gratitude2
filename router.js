@@ -11,7 +11,6 @@ var User = require('./user.js');
 var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
-
 //***USER INFORMATION**//
 
   //?? What is the difference between a url path and the api path?
@@ -23,40 +22,44 @@ module.exports = function(app, express) {
     //Will also need to get reference to the user and save some kind of authentication for when they make posts.
     //Need to start using sessions.
   app.post('/signup', jsonParser, function (req, res, next) {
-    console.log("INFO GOT : ", req.body)
     var user = new User({
       username: req.body.userName,
       password: req.body.password
     });
-    user.save(function (err, post) {
+    user.save(function (err, data) {
       if (err) {
         return next(err);
       } else {
         //This line saves the user on the session
-        // req.session.user = user; --> This breaks it. So I am not doing it right.
+        req.session.user = data;
         // res.redirect('/dashboard'); --> will use this later when pages are visable.
         res.json(201, user);
       }
     });
   });
 
-  app.get('/login', jsonParser, function (req, res, next) {
-    var user = new User({
-      username: req.body.userName,
-      password: req.body.password
-    });
-    user.save(function (err, post) {
-      if (err) {
-        return next(err);
+  app.post('/login', jsonParser, function (req, res, next) {
+    var username = req.body.userName;
+    var password = req.body.password;
+    User.findOne({username: username}, {password: password}, function(err, user){
+      if(err){
+        res.statusCode(404).json(err);
+        console.log("User Does Not Exist");
       } else {
-        res.json(201, user);
+        req.session.user = user;
+        console.log("Session is created and is :", req.session);
+        res.json(200, user);
       }
     });
   });
+
+  app.get('/logout', function(req, res){
+    req.session.destroy();
+    res.json("You have logged out");
+    console.log("SESSION GONE! SESSION IS NOW : ", req.session);
+  });
+
 //***ROUTING INFORMATION**//
-
-
-
 
 
 //***POST INFORMATION**//
