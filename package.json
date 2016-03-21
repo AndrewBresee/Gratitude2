@@ -2,8 +2,9 @@
   "name": "one-route",
   "dependencies": {
     "body-parser": "^1.15.0",
-    "client-sessions": "^0.7.0",
+    "cookie-parser": "^1.4.1",
     "express": "~4.5.1",
+    "express-session": "^1.13.0",
     "hash": "^0.2.0",
     "mongoose": "^4.4.5"
   }
