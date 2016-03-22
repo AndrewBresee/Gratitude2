@@ -12,6 +12,7 @@ var User = require('./user.js');
 var jsonParser = bodyParser.json();
 
 module.exports = function(app, express) {
+
 //***USER INFORMATION**//
 
   //?? What is the difference between a url path and the api path?
@@ -23,6 +24,7 @@ module.exports = function(app, express) {
 //TODO: Get bcyrpt to hash passwords
   //Setup routing for different paths
   //Make frontend
+  //Check if user exists
   app.post('/signup', jsonParser, function (req, res, next) {
     var user = new User({
       username: req.body.userName,
@@ -35,7 +37,8 @@ module.exports = function(app, express) {
         //This line saves the user on the session
         //Without hash, it will save their password directly.
         //Maybe should only save their username
-        req.session.user = data;
+        //TODO: only save user id to session
+          req.session.user = data;
         // res.redirect('/dashboard'); --> will use this later when pages are visable.
         res.json(201, user);
       }
