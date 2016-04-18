@@ -9,7 +9,7 @@ exports.makePost = function (req, res, next) {
     console.log("You are not logged in!");
     res.statusCode(404).json("You are not logged in!");
     //probably need to stop them from continuing here.
-    res.json(404);
+    return;
   }
 
   var post = new Post({
@@ -31,7 +31,7 @@ exports.getPost = function(req, res){
   console.log("req.params.title :", req.params.title);
   var requestedTitle = req.params.title;
   Post.findOne({title: requestedTitle}, function(err, data){
-    if(err){
+    if (err){
       res.statusCode(404).json(err);
     } else {
       res.json(200, data);

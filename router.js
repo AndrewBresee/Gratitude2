@@ -40,6 +40,8 @@ module.exports = function(app, express) {
   });
 };
 
+//When routing json, put api in front "api/getPost"
+
 //?? Questions about the different responses/requests. When to use res.next, or res.send, res.write etc.
   //res.(something) seems to just DO something.
   //We can also do res.render(*filename*)
@@ -53,6 +55,10 @@ module.exports = function(app, express) {
   //On post, it seems we can use req.query instead of having to use middleware jsonParser.
   //Will have to refactor to include users information
   //Setup routing for different paths
+
   //Make frontend
   //Check if user exists
   //Get bcyrpt to hash passwords
+  //Using passport for facebook oauth
+
+  //Ionic on top of angular.
