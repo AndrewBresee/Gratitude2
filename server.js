@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser')
 
 //Got this from documentation online. A little unsure of how to use it.
 
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
