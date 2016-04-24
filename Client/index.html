@@ -11,14 +11,26 @@
 
 <div ng-controller="PhoneListCtrl">
 
-  <ul>
-    <li ng-repeat="phone in phones">
-      <span>{{phone.name}}</span>
-      <p>{{phone.snippet}}</p>
-    </li>
+ Search: <input ng-model="query">
+
+ <select ng-model="orderProp">
+  <option value="name">Alphabetical</option>
+  <option value="age">Newest</option>
+</select>
+
+ <ul class="phones">
+ 			Google Phone Gallery: {{query}}
+        <li ng-repeat="phone in phones | filter:query | orderBy:orderProp">
+          {{phone.name}}
+          <p>{{phone.snippet}}</p>
+        </li>
   </ul>
 
 </div>
+
+
+
+
 
 </body>
 </html>
