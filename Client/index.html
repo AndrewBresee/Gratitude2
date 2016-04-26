@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app = "gratitudeApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+<script src="controler.js"></script>
+
+	<title>Gratitudes</title>
+</head>
+
+<body>
+
+<div ng-controller="PhoneListCtrl">
+
+ Search: <input ng-model="query">
+
+ <select ng-model="orderProp">
+  <option value="name">Alphabetical</option>
+  <option value="age">Newest</option>
+</select>
+
+ <ul class="phones">
+ 			Google Phone Gallery: {{query}}
+        <li ng-repeat="phone in phones | filter:query | orderBy:orderProp">
+          {{phone.name}}
+          <p>{{phone.snippet}}</p>
+        </li>
+  </ul>
+
+</div>
+
+
+
+
+
+</body>
+</html>
